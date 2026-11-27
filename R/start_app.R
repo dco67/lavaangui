@@ -62,6 +62,7 @@ start_app <- function(fit = NULL, full, where, layout, export_filepath, scale) {
 
     # reactive vals
     fit <- reactiveVal(NULL)
+    analysisSpec <- reactiveVal(NULL) # last completed GUI estimation specification
     forceEstimateUpdate <- reactiveVal()
     to_render <- reactiveVal(help_text)
 
@@ -116,7 +117,7 @@ start_app <- function(fit = NULL, full, where, layout, export_filepath, scale) {
     serverLayout("layout", fit, full, imported)
 
     ## main server for running lavaan
-    serverLavaanRun("run", to_render, forceEstimateUpdate, getData, fit)
+    serverLavaanRun("run", to_render, forceEstimateUpdate, getData, fit, analysisSpec)
 
     serverEstimateUpdater("ests", forceEstimateUpdate, fit, to_render)
 
@@ -124,7 +125,7 @@ start_app <- function(fit = NULL, full, where, layout, export_filepath, scale) {
 
     serverDownloader("down", getData)
 
-    extendResultsServer("extend", fit)
+    extendResultsServer("extend", fit, getData, analysisSpec)
 
     serverUserLayoutSaver("layout_saver", !is.null(importedModel$export_filepath))
 

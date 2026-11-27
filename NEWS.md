@@ -1,3 +1,18 @@
+# Proposed advanced-analysis contribution (development branch)
+
+Development candidate for maintainer review; not an upstream release. Original author metadata, license, public API and editor behavior are retained.
+
+- Add Model Comparison under More Results: snapshot A/B specifications, conservative nested restriction checks, ML/MLR and simple ordinal WLSMV comparisons, CSV, reproducible R scripts and offline reports.
+- Add Multiple Groups: continuous complete and partial CFA invariance, all/selected structural regression equality, and full ordinal CFA invariance using optional semTools and Wu--Estabrook identification.
+- Add estimates with matching raw/standardized intervals, synchronized group-specific diagrams, descriptive difference panels, SVG exports, companion JSON settings and last-view restoration.
+- Add ordinary ML two-group measurement score/EPC diagnostics and continuous recursive ML/MLR indirect/total effects with full-covariance delta-method group contrasts.
+- Group results in five main tabs and provide explicit partial-invariance controls and scoped typography.
+- Correct lavaan.vector degrees-of-freedom comparisons and recognize lavaan 0.7-3's additional Browne residual test in ordinary ML score diagnostics; retain scope checks.
+- All six non-interactive R acceptance suites passed on 26 November 2026 and again on 27 November 2026 in the fork based on commit `29636db`. The second run used Windows 11, R 4.6.0, lavaan 0.7-3 and semTools 0.5-10, with renv autoloading temporarily disabled. All 13 Rd files parsed and the native reference walkthrough completed. Validation with the upstream lockfile, installed-help checks, full package checks, cross-platform checks and live Shiny acceptance remain review tasks.
+- Add native R help topics, offline English guide, exact synthetic example data/models and a native-lavaan walkthrough. The final documentation increment did not change runtime function bodies, statistical routines, JS or the acceptance suites.
+
+See `ADVANCED-EXTENSION-CHANGELOG.md` for development history and `inst/doc/advanced-analysis.html` for current workflows and limits. The existing main app does not import fitted multiple-group lavaan objects for editing.
+
 # lavaangui 0.4.1
 - Bugfix: Math in display labels (e.g., Greek letters, subscripts) was garbled when exporting the diagram to PDF (#105).
 

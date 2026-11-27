@@ -8,11 +8,13 @@ extendResultsUI <- function(id) {
     exactTestUI(ns("exact")),
     waldTestUI(ns("wald")),
     lavInspectUI(ns("inspect")),
+    advancedComparisonUI(ns("compare")),
+    advancedMultigroupUI(ns("multigroup"))
   )
 }
 
 # Define the overall module server
-extendResultsServer <- function(id, fit) {
+extendResultsServer <- function(id, fit, getData, analysisSpec) {
   moduleServer(id, function(input, output, session) {
     parameterEstimatesServer("paraEsts", fit)
     factorScoresServer("factorScores", fit)
@@ -21,5 +23,7 @@ extendResultsServer <- function(id, fit) {
     waldTestServer("wald", fit)
     modificationServer("mod", fit)
     exactTestServer("exact", fit)
+    advancedComparisonServer("compare", getData, analysisSpec)
+    advancedMultigroupServer("multigroup", getData, analysisSpec)
   })
 }

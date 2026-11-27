@@ -21,15 +21,20 @@ sendResultsFront <- function(session, result, fromJavascript, df) {
 }
 
 
-serverLavaanRun <- function(id, to_render, forceEstimateUpdate, getData, fit) { # nolint: cyclocomp_linter.
+serverLavaanRun <- function(id, to_render, forceEstimateUpdate, getData, fit, analysisSpec) { # nolint: cyclocomp_linter.
   moduleServer(id, function(input, output, session) {
     abort_file_global <- reactiveVal()
+    analysisRequest <- reactiveVal(0L)
     future::plan(future::multisession)
     ## main loop
     observeEvent(input$fromJavascript, {
       req(input$fromJavascript)
       ## Mode == "User Model", just send R_script to output
       fromJavascript <- jsonlite::fromJSON(input$fromJavascript)
+      # Invalidate the advanced-analysis snapshot while a new diagram is pending.
+      requestId <- isolate(analysisRequest()) + 1L
+      analysisRequest(requestId)
+      analysisSpec(NULL)
       if (fromJavascript$mode == "user model") {
         to_render(fromJavascript$model$R_script)
         return(NULL)
@@ -116,6 +121,8 @@ serverLavaanRun <- function(id, to_render, forceEstimateUpdate, getData, fit) { 
         }
 
         fit(cacheResult$fit)
+        # Advanced analyses refit this specification; they never reuse the cached fit.
+        if (isTruthy(getData())) analysisSpec(advancedSnapshot(modelJavascript, getData()))
         sendResultsFront(session, cacheResult, fromJavascript, getData())
         to_render(cacheResult)
         forceEstimateUpdate(stats::rnorm(1))
@@ -142,6 +149,7 @@ serverLavaanRun <- function(id, to_render, forceEstimateUpdate, getData, fit) { 
       abort_file <- tempfile()
       abort_file_global(abort_file)
       fit_args <- c(list(model = model, data = data), optsList)
+      snapshot <- advancedSnapshot(modelJavascript, data)
       fut <- promises::future_promise(
         {
           `%get%` <- function(pkg, fun) {
@@ -186,6 +194,8 @@ serverLavaanRun <- function(id, to_render, forceEstimateUpdate, getData, fit) { 
         function(value) {
           if (is.null(value$error)) {
             fit(value$fit)
+            # A late response must not replace a newer snapshot.
+            if (identical(isolate(analysisRequest()), requestId)) analysisSpec(snapshot)
             sendResultsFront(session, value, fromJavascript, getData())
             to_render(value)
             session$sendCustomMessage("lav_sucess", "lav_error")

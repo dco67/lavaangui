@@ -36,6 +36,8 @@ Imports:
     DT (>= 0.33),
     plyr (>= 1.8.9),
     digest (>= 0.6.35)
+Suggests:
+    semTools (>= 0.5-6)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

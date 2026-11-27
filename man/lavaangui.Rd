@@ -7,7 +7,7 @@
 lavaangui(fit = NULL)
 }
 \arguments{
-\item{fit}{A lavaan model, as returned by the \code{lavaan}, \code{sem}, or \code{cfa} functions from the \code{lavaan} package.
+\item{fit}{A single-group lavaan model, as returned by the \code{lavaan}, \code{sem}, or \code{cfa} functions from the \code{lavaan} package.
 If provided, lavaangui imports the model and data. If left empty, lavaangui starts without importing.}
 }
 \value{
@@ -17,8 +17,13 @@ nothing
 The \code{lavaangui} function launches the lavaangui Shiny application.
 }
 \details{
-Currently, multiple-group models are not supported. However, you can create an
-interactive plot of those models using \code{\link{plot_lavaan}}
+This development contribution adds separate Model Comparison and Multiple Groups
+modules under More Results after a completed diagram estimate. They refit
+supported models using the loaded data; they do not replace the main diagram
+or turn it into a multiple-group editor. Importing an already fitted
+multiple-group lavaan object with \code{lavaangui(fit)} remains unsupported.
+Such objects can still be visualized with \code{\link{plot_lavaan}}.
+See \code{\link{lavaangui-advanced}} for supported workflows and limits.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
@@ -35,4 +40,7 @@ model <- "
 fit <- cfa(model, data = HolzingerSwineford1939)
 lavaangui(fit)
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link{lavaangui-advanced}}, \code{\link{plot_lavaan}}
 }

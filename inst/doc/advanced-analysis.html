@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Advanced analysis with lavaangui</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <style>
+  :root { color-scheme: light; --ink:#203044; --muted:#536477; --accent:#245b81; --rule:#d4dee7; --paper:#fff; --pale:#f1f6fa; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0 auto; padding:2.8rem 2rem 4rem; max-width:1040px; color:var(--ink); background:var(--paper); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; font-size:16px; line-height:1.65; }
+  header#title-block-header { border-top:6px solid var(--accent); padding:1.35rem 0 1.1rem; border-bottom:1px solid var(--rule); margin-bottom:1.6rem; }
+  h1.title { font-size:clamp(1.9rem,4vw,2.75rem); line-height:1.1; margin:.25rem 0 .65rem; letter-spacing:-.035em; color:#18334a; }
+  .subtitle { color:var(--muted); font-size:1.05rem; margin:0; }
+  nav#TOC { margin:1.5rem 0 2.1rem; padding:1rem 1.4rem; background:var(--pale); border-left:4px solid var(--accent); border-radius:0 6px 6px 0; }
+  nav#TOC::before { content:"Contents"; font-weight:700; color:#18334a; }
+  nav#TOC ul { margin:.5rem 0; padding-left:1.25rem; }
+  nav#TOC li { margin:.16rem 0; }
+  h2 { margin-top:2.45rem; padding-top:1.0rem; border-top:1px solid var(--rule); color:#18334a; line-height:1.3; font-size:1.55rem; letter-spacing:-.02em; }
+  h3 { margin-top:1.7rem; color:#245b81; font-size:1.12rem; line-height:1.35; }
+  p,li { overflow-wrap:anywhere; }
+  a { color:#1d5a88; text-decoration-thickness:1px; text-underline-offset:2px; }
+  a:focus-visible { outline:3px solid #c48032; outline-offset:3px; }
+  code { font-family:Consolas,"SFMono-Regular",Menlo,monospace; font-size:.9em; color:#183b55; background:#f1f5f8; padding:.1em .24em; border-radius:3px; overflow-wrap:anywhere; }
+  pre { padding:1rem; background:#f1f5f8; border:1px solid var(--rule); border-radius:5px; overflow-x:auto; font-size:.87rem; line-height:1.55; }
+  pre code { background:transparent; padding:0; white-space:pre; overflow-wrap:normal; }
+  table { border-collapse:collapse; width:100%; margin:1.2rem 0 1.65rem; font-size:.92rem; line-height:1.42; }
+  th { background:#e8f0f5; color:#18334a; text-align:left; font-weight:650; }
+  th,td { vertical-align:top; padding:.65rem .72rem; border-bottom:1px solid var(--rule); overflow-wrap:anywhere; }
+  tr:nth-child(even) td { background:#fafbfd; }
+  hr { border:0; border-top:1px solid var(--rule); }
+  @media(max-width:640px){ body { padding:1.25rem .9rem 3rem; font-size:15px; } table { font-size:.82rem; } td,th { padding:.46rem .4rem; } nav#TOC {padding:.8rem;} }
+  @media print { body{padding:0; max-width:none; color:black;font-size:10.5pt;} h2,h3 {break-after:avoid;} tr,pre {break-inside:avoid;} a{color:inherit;} nav#TOC {break-after:page;} }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Advanced analysis with lavaangui</h1>
+<p class="subtitle">User guide for the proposed development contribution
+· 0.4.0.9000</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#quick-start" id="toc-quick-start">Quick start</a></li>
+<li><a href="#navigation" id="toc-navigation">Navigation map</a></li>
+<li><a href="#example-kit" id="toc-example-kit">The synthetic example
+kit</a></li>
+<li><a href="#nested" id="toc-nested">1. Compare nested models</a></li>
+<li><a href="#continuous" id="toc-continuous">2. Continuous
+multiple-group measurement invariance</a></li>
+<li><a href="#ordinal" id="toc-ordinal">3. Ordinal multiple-group
+CFA</a></li>
+<li><a href="#regressions" id="toc-regressions">4. Structural regression
+equality</a></li>
+<li><a href="#scores" id="toc-scores">5. Explore constraints with score
+tests and EPC</a></li>
+<li><a href="#effects" id="toc-effects">6. Compare indirect and total
+effects</a></li>
+<li><a href="#diagrams" id="toc-diagrams">7. Inspect estimates and
+diagrams</a></li>
+<li><a href="#exports" id="toc-exports">8. Reproducible exports and
+restoration</a></li>
+<li><a href="#validation" id="toc-validation">9. Verify and
+reproduce</a></li>
+<li><a href="#troubleshooting" id="toc-troubleshooting">10.
+Troubleshooting</a></li>
+<li><a href="#references" id="toc-references">References and further
+reading</a></li>
+</ul>
+</nav>
+<p><strong>Purpose.</strong> This guide documents the local development
+contribution validated on 26 November 2026. It adds two advanced results
+modules to the original graphical application. It is not an official
+upstream release. The original author, public functions, model editor,
+and <code>.lvm</code> model format are retained. All estimation remains
+in lavaan. The new modules do not change the main diagram or replace its
+fitted results.</p>
+<p>The guide covers the final, grouped navigation. Earlier development
+notes may show intermediate tab names. Follow the paths in this guide
+instead. The public hosted version at <a
+href="https://lavaangui.org/">lavaangui.org</a> may not contain this
+contribution.</p>
+<h2 id="quick-start">Quick start</h2>
+<h3 id="install-and-launch">Install and launch</h3>
+<p>Use the documented development checkout with its
+<code>DESCRIPTION</code> dependencies installed. For the optional
+ordinal multiple-group workflow, install semTools (at least 0.5-6):</p>
+<pre class="r"><code>if (!requireNamespace(&quot;semTools&quot;, quietly = TRUE)) {
+  install.packages(&quot;semTools&quot;)
+}</code></pre>
+<p>A developer may launch from the source root using
+<code>pkgload::load_all()</code> followed by
+<code>lavaangui::lavaangui()</code>. For a normally installed package,
+run <code>lavaangui::lavaangui()</code> directly. <code>pkgload</code>
+is a separate development tool, not a new runtime dependency. The other
+workflows do not require semTools.</p>
+<p>To find this installed guide and the example kit:</p>
+<pre class="r"><code>help(&quot;lavaangui-advanced&quot;, package = &quot;lavaangui&quot;)
+guide &lt;- system.file(&quot;doc&quot;, &quot;advanced-analysis.html&quot;,
+                     package = &quot;lavaangui&quot;)
+stopifnot(nzchar(guide))
+utils::browseURL(guide)
+kit &lt;- system.file(&quot;advanced-examples&quot;, package = &quot;lavaangui&quot;)
+print(kit)
+list.files(kit, recursive = TRUE)</code></pre>
+<p>In an extracted source project, the guide is
+<code>inst/doc/advanced-analysis.html</code> and the files are in
+<code>inst/advanced-examples/</code>. Copy the kit to a writable working
+folder before changing a model or saving results. All examples use
+simulated data. There is no need to supply real participant data.</p>
+<h3 id="how-to-reach-the-modules">How to reach the modules</h3>
+<ol type="1">
+<li>In the main application, use <strong>File &gt; Load Data</strong> to
+open <code>banc_lavaangui.csv</code>.</li>
+<li>Use <strong>File &gt; Load Model</strong> to open the example
+<code>.lvm</code>. Inspect its syntax and estimation options.</li>
+<li>Click <strong>Estimates</strong> and wait for a completed fit.
+Resolve estimation errors first.</li>
+<li>Click <strong>More Results</strong>, then choose <strong>Model
+Comparison</strong> or <strong>Multiple Groups</strong>.</li>
+<li>Configure, confirm the assumptions, run, and read the results.
+Exports are optional. Changing analysis controls resets confirmation;
+check it last.</li>
+</ol>
+<p>The list of available variables in the main editor omits columns
+already represented by observed nodes in the diagram. They are not
+missing from the data. The grouping column must not itself be an
+indicator or predictor in the model. Importing an already fitted
+multiple-group lavaan object via <code>lavaangui(fit)</code> remains
+unsupported. <code>plot_lavaan(fit)</code> can visualize existing fitted
+models; its original layout mechanism is separate from this
+extension.</p>
+<h3 id="which-workflow-should-i-choose">Which workflow should I
+choose?</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Research question</th>
+<th style="text-align: left;">Analysis entry</th>
+<th style="text-align: left;">Supported scope</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Does restricting a path worsen fit?</td>
+<td style="text-align: left;">Model Comparison</td>
+<td style="text-align: left;">Simple nested regression or off-diagonal
+covariance restrictions; ML, MLR or ordinal WLSMV</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Is the measurement model comparable across
+groups?</td>
+<td style="text-align: left;">Multiple Groups &gt; Measurement
+invariance (CFA)</td>
+<td style="text-align: left;">Continuous first-order CFA; full or
+partial invariance; ML/MLR</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Is an ordinal measurement model
+invariant?</td>
+<td style="text-align: left;">Multiple Groups &gt; Ordinal measurement
+invariance (WLSMV)</td>
+<td style="text-align: left;">Fully ordinal simple CFA; full invariance
+with theta and Wu–Estabrook identification</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Does a structural coefficient differ
+across groups?</td>
+<td style="text-align: left;">Multiple Groups &gt; Equal regressions
+(path model / SEM)</td>
+<td style="text-align: left;">Continuous ML/MLR; all or selected
+regressions</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Which constrained measurement parameter is
+problematic?</td>
+<td style="text-align: left;">Advanced diagnostics &gt; Constraint
+diagnostics</td>
+<td style="text-align: left;">Simple continuous CFA, exactly two groups,
+ordinary ML, listwise deletion</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">How do indirect or total effects
+differ?</td>
+<td style="text-align: left;">Advanced diagnostics &gt; Indirect &amp;
+total effects</td>
+<td style="text-align: left;">Continuous recursive ML/MLR; free
+regressions fit</td>
+</tr>
+</tbody>
+</table>
+<p>For WLSMV comparison in the first row, two single-group model
+specifications are compared. The ordinal multiple-group sequence in the
+third row uses a different, explicitly generated identification scheme.
+Do not conflate the two workflows.</p>
+<h2 id="navigation">Navigation map</h2>
+<p><strong>Model Comparison</strong> has two results tabs:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Main tab</th>
+<th style="text-align: left;">What is inside</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Fit table</td>
+<td style="text-align: left;">Fit summaries, valid difference test if
+available, warnings and diagnostics; CSV</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Export</td>
+<td style="text-align: left;">Analysis script; HTML report</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Multiple Groups</strong> has five main results tabs:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Main tab</th>
+<th style="text-align: left;">What is inside</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Fit table</td>
+<td style="text-align: left;">Fit summaries, used observations by group,
+sequential comparisons and diagnostics; CSV</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Selected estimates</td>
+<td style="text-align: left;">Model, unstandardized or fully
+standardized parameter estimates and matching CIs; CSV</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Path diagram</td>
+<td style="text-align: left;">One group, two groups or two groups plus
+difference; layout and SVG</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Advanced diagnostics</td>
+<td style="text-align: left;">Constraint diagnostics; Indirect &amp;
+total effects</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Export &amp; restore</td>
+<td style="text-align: left;">Save / restore; Analysis script; HTML
+report</td>
+</tr>
+</tbody>
+</table>
+<p>The left panel contains the model/group settings and confirmation.
+The right panel contains results. <code>Expand viewer</code> in Path
+diagram can temporarily widen the diagram area. Open
+<code>Inspect current model and estimation settings</code> or
+<code>Inspect saved specifications A and B</code> to see the syntax and
+options.</p>
+<h2 id="example-kit">The synthetic example kit</h2>
+<p><code>banc_lavaangui.csv</code> contains <strong>2,400 simulated
+observations</strong>, 25 columns, no missing values, and two groups (A
+and B; 1,200 each) in <code>groupe</code>. The factor indicators
+<code>x1</code>–<code>x4</code>, <code>y1</code>–<code>y4</code> are
+continuous; <code>X</code>, <code>Z</code>, <code>M</code>,
+<code>Y</code> are observed structural variables;
+<code>u1</code>–<code>u3</code>, <code>v1</code>–<code>v3</code> are
+continuous latent-SEM indicators; <code>o1</code>–<code>o3</code>,
+<code>p1</code>–<code>p3</code> are four-category ordinal indicators.
+Keep the exact CSV and its order for comparisons and JSON
+restoration.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">File in <code>modeles/</code></th>
+<th style="text-align: left;">Intended use</th>
+<th style="text-align: right;">Single-group df (design)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>01_AFC_continue.lvm</code></td>
+<td style="text-align: left;">Continuous two-factor CFA</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>02_Chemins_A_ML.lvm</code></td>
+<td style="text-align: left;">Less restricted paths, ML; group
+regression/effects</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>03_Chemins_B_ML.lvm</code></td>
+<td style="text-align: left;">More restricted paths, ML</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>04_Chemins_A_MLR.lvm</code></td>
+<td style="text-align: left;">Less restricted paths, MLR; robust
+effects</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>05_Chemins_B_MLR.lvm</code></td>
+<td style="text-align: left;">More restricted paths, MLR</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>06_Ordinale_A_WLSMV.lvm</code></td>
+<td style="text-align: left;">Less restricted ordinal CFA (includes
+<code>o2 ~~ p2</code>)</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>07_Ordinale_B_WLSMV.lvm</code></td>
+<td style="text-align: left;">More restricted ordinal CFA; also ordinal
+group invariance</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>08_SEM_latent_ML.lvm</code></td>
+<td style="text-align: left;">Continuous SEM with a latent direct
+regression</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+<p><code>specifications.csv</code> records the syntax, estimator,
+ordinal variables and intended single-group df. The model files and CSV
+are unmodified copies of the contributor’s teaching kit.
+Example-specific numerical values below come from the kit’s
+independently calculated ML reference; the acceptance tests printed
+other numbers when run on their own simulated data. Always check your
+actual lavaan output.</p>
+<h2 id="nested">1. Compare nested models</h2>
+<h3 id="what-is-tested">What is tested?</h3>
+<p>Model A is the less restricted model. Model B fixes or removes one or
+more independent free regressions or off-diagonal covariances in A. It
+must not introduce a new free parameter or change another fixed value.
+The models must describe the same variables, cases, grouping, exogenous
+roles, measurement specification and effective options. The automatic
+check is a conservative parameter-space check, not a general algorithm
+for model nesting. A and B may be saved in either order, but A must
+remain the less restricted specification.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Estimator</th>
+<th style="text-align: left;">Formal test</th>
+<th style="text-align: left;">Important interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ML</td>
+<td style="text-align: left;">Ordinary <code>lavTestLRT()</code></td>
+<td style="text-align: left;">Difference of ordinary chi-square
+statistics under the appropriate regularity assumptions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MLR</td>
+<td style="text-align: left;">lavaan’s fitted robust-test dispatch in
+<code>lavTestLRT()</code></td>
+<td style="text-align: left;">Do not subtract scaled chi-square
+values</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">WLSMV</td>
+<td
+style="text-align: left;"><code>lavTestLRT(..., method="satorra.2000", a.method="delta", scaled.shifted=TRUE, test="scaled.shifted")</code></td>
+<td style="text-align: left;">Corrected scaled-shifted difference; do
+not subtract scaled values; AIC/BIC not applicable</td>
+</tr>
+</tbody>
+</table>
+<p>Both fits must converge, be admissible and have no captured fit
+warnings; incompatibilities, unsupported restrictions, nonpositive or
+mismatched df differences and invalid tests suppress formal inference.
+If the table reports incompatible fits, do not compare even AIC/BIC.
+Ordinary and robust fit indices are displayed where available. Missing
+robust measures are unavailable, not zero. The comparison requires the
+same cases and estimation settings; supported continuous missing-data
+options include listwise and ML/FIML when the actual fitted cases and
+options agree. Bootstrap is not supported. WLSMV requires declared
+ordered endogenous variables, automatic thresholds and scale parameters,
+listwise deletion and matching threshold/correlation moments and
+weights. Ordered exogenous variables and arbitrary threshold or scale
+changes are outside this scope.</p>
+<h3 id="walkthrough-a-ml-and-mlr">Walkthrough A: ML and MLR</h3>
+<p>Load the shared CSV and <code>02_Chemins_A_ML.lvm</code>. The two
+equations are <code>M ~ X + Z</code> and <code>Y ~ M + X</code>.</p>
+<ol type="1">
+<li>Estimate A, open More Results &gt; Model Comparison, click
+<strong>Clear saved models</strong>, then <strong>Save latest estimate
+as A</strong>.</li>
+<li>Close the results dialog. Load <code>03_Chemins_B_ML.lvm</code> (or
+remove the arrow X → Y in A). Do not reload or modify the CSV. Estimate
+B.</li>
+<li>Return to Model Comparison, click <strong>Save latest estimate as
+B</strong>. Check the status and saved syntaxes. If loading a model has
+reset the session, use the in-place removal of the path instead.</li>
+<li>Check <strong>I have checked that B is nested in A</strong> and
+click <strong>Compare A and B</strong>. Read the fit table and
+diagnostic text. Expected df: A = 1, B = 2; the difference is one. The
+omitted path is intentionally important in this kit.</li>
+<li>Repeat with <code>04_Chemins_A_MLR.lvm</code> /
+<code>05_Chemins_B_MLR.lvm</code>. Keep estimator settings identical
+within the pair, not across the two separate comparisons. Compare
+ordinary and robust quantities and the actual corrected test. In
+<strong>Export</strong> you can read/download the R script or download
+an HTML report.</li>
+</ol>
+<p>Check the guard: swap A and B, or save the same model to both slots.
+There must not be a valid nested difference test. Restore the intended
+pair before interpretation. A failed test is not evidence for
+equality.</p>
+<h3 id="walkthrough-b-ordinal-wlsmv">Walkthrough B: ordinal WLSMV</h3>
+<p>Repeat the workflow with <code>06_Ordinale_A_WLSMV.lvm</code> and
+<code>07_Ordinale_B_WLSMV.lvm</code>. Inspect that <code>o1</code>,
+<code>o2</code>, <code>o3</code>, <code>p1</code>, <code>p2</code>,
+<code>p3</code> are ordered in both models, WLSMV is selected and
+listwise deletion and automatic thresholds/scales are enabled. A
+includes the residual covariance <code>o2 ~~ p2</code>; B omits it.
+Expected df: 7 and 8. Read the <strong>Scaled and Shifted Chi-Squared
+Difference Test</strong> rather than the arithmetic difference of
+individual scaled chi-squares. The test column labeled
+<code>Chisq</code> may contain ordinary statistics, as indicated in
+lavaan’s note. Report the appropriate model-specific scaled fit and
+corrected difference statistic. Do not use AIC/BIC in this
+comparison.</p>
+<h2 id="continuous">2. Continuous multiple-group measurement
+invariance</h2>
+<h3 id="meaning-and-conditions">Meaning and conditions</h3>
+<p>A grouping variable must be separate from the modeled variables with
+2–10 nonblank groups. Missing or blank group labels are excluded. Group
+order is first occurrence in the data, not alphabetical; the first group
+is the reference. Each group must contain at least two rows before
+estimation, but that is only a technical guard; actual information and
+sample size must be adequate. Check the used observations for each
+fitted model. The continuous workflow requires finite numeric or missing
+model columns, ML/MLR, a first-order factor structure, ordinary
+first-marker scaling, automatic variances and a mean structure for the
+group fits. It rejects additional fixed loadings/variances, fixed
+nonzero paths, labels, defined effects, explicit intercept syntax,
+special constraints and higher-order factors. A CFA invariance sequence
+contains no structural regressions. The sequence below constrains
+<strong>unstandardized</strong> parameters.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stage</th>
+<th style="text-align: left;">Cross-group equality imposed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Configural</td>
+<td style="text-align: left;">Same measurement structure; parameters
+otherwise free subject to identification</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Metric</td>
+<td style="text-align: left;">Add equal factor loadings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Scalar</td>
+<td style="text-align: left;">Add equal observed intercepts;
+nonreference latent means may become estimable</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Strict (optional)</td>
+<td style="text-align: left;">Add equal residual variances</td>
+</tr>
+</tbody>
+</table>
+<p>Interpret fit and changes in context of theory, identification and
+design. Subsequent stages condition on earlier restrictions. Rejection
+of configural fit is not cured by mechanically adding equality.
+Non-rejection of a difference test does not establish invariance. Review
+fit indices, uncertainty and substantive plausibility; no universal
+cutoff or automatic model-selection rule is implemented.</p>
+<h3 id="walkthrough-c-full-invariance">Walkthrough C: full
+invariance</h3>
+<ol type="1">
+<li>Load <code>01_AFC_continue.lvm</code> and the CSV; estimate. Open
+More Results &gt; Multiple Groups.</li>
+<li>Choose <strong>Grouping column</strong> = <code>groupe</code>;
+choose <strong>Measurement invariance (CFA)</strong>. Check
+<strong>Include strict invariance (residual variances)</strong>. Leave
+<strong>Specify exceptions (partial invariance)</strong> unchecked.</li>
+<li>Check <strong>I have checked the grouping variable, measurement type
+and assumptions</strong> last; click <strong>Run multigroup
+analysis</strong>.</li>
+<li>Read Fit table, observations used, sequential comparisons and
+diagnostics. The two groups have 1,200 observations each in the
+unmodified kit. Four models have expected df 38, 44, 50, 58. The
+intentionally unequal loading/intercept/residual variance makes the
+complete constraints poorly supported.</li>
+</ol>
+<h3 id="walkthrough-d-partial-invariance">Walkthrough D: partial
+invariance</h3>
+<p>The extension can release selected <strong>nonmarker
+loadings</strong> and <strong>observed intercepts</strong> between all
+groups using <code>group.partial</code>. Loadings released at the metric
+stage remain free at scalar and strict stages; intercept releases apply
+at scalar and strict. Partial invariance currently requires simple
+structure and at least two indicators per factor with both invariant
+loadings and intercepts. No residual variance can be released through
+these controls.</p>
+<ol type="1">
+<li>In the same analysis, check <strong>Specify exceptions (partial
+invariance)</strong>. Under <strong>Loadings free across
+groups</strong>, select <code>f1 =~ x3</code>. Under <strong>Intercepts
+free across groups</strong>, select <code>y3 ~ 1</code>.</li>
+<li>Re-confirm and run. Read Partial metric, Partial scalar and Partial
+strict.</li>
+<li>Compare full and partial sequences. In a nested sequence the df must
+increase by the expected number of independent restrictions. The kit’s
+expected df are 38, 43, 48, 56 for these partial stages.</li>
+<li>Uncheck the partial-invariance checkbox to return to the complete
+sequence. Re-confirm and run; retained selections do not apply while the
+box is unchecked.</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stage</th>
+<th style="text-align: right;">Full df</th>
+<th style="text-align: right;">Full χ² (ref.)</th>
+<th style="text-align: right;">Partial df</th>
+<th style="text-align: right;">Partial χ² (ref.)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Configural</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">69.641</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">69.641</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Metric</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">241.806</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">72.124</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Scalar</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">682.143</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">73.284</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Strict</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">863.641</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">239.255</td>
+</tr>
+</tbody>
+</table>
+<p>These ML values are independent calculations on the bundled teaching
+CSV, not the numerical values printed by the acceptance suites on their
+separate fixtures. The partial metric and scalar restrictions have
+expected non-rejections (approximately p = .779 and .949); strict
+remains rejected. The configural fit must still be assessed on its own.
+Use actual native R output and the GUI diagnostics to verify results.
+Partial invariance selected from the same data is exploratory and should
+be justified and checked independently.</p>
+<h2 id="ordinal">3. Ordinal multiple-group CFA</h2>
+<p>Ordinal items represent ordered categories of underlying continuous
+responses. Thresholds, response location and scale are not separately
+identified without restrictions. The extension therefore constructs the
+sequence using <code>semTools::measEq.syntax()</code> with
+<code>ID.fac="std.lv"</code>, <code>ID.cat="Wu.Estabrook.2016"</code>
+(Wu &amp; Estabrook, 2016), WLSMV, theta parameterization and listwise
+deletion. The graphic model supplies structure; marker scaling from the
+original editor is replaced by the generated identification. All latent
+covariances are free in the generated configural structure.</p>
+<p>The supported prototype requires simple correlated first-order CFA,
+every indicator declared ordered, at least three indicators per factor,
+4–12 observed categories after listwise deletion, the same category sets
+and at least five complete cases per category in each group. Five is a
+minimal guard, not a sample-size or information guarantee. Enable
+automatic variances and latent covariances; no correlated indicator
+residuals, cross-loadings, fixed additional parameters, mixed
+measurement, binary/three-category items, structural regressions,
+partial ordinal invariance or pairwise/FIML missingness. These cases are
+outside this implementation, not necessarily impossible
+scientifically.</p>
+<h3 id="walkthrough-e-ordinal-full-invariance">Walkthrough E: ordinal
+full invariance</h3>
+<ol type="1">
+<li>Install semTools if needed and restart R. Load
+<code>07_Ordinale_B_WLSMV.lvm</code>, not model 06 (which includes a
+correlated residual). Confirm all six <code>o</code> and <code>p</code>
+indicators are ordinal and WLSMV is selected.</li>
+<li>Estimate and open Multiple Groups, choose <code>groupe</code>,
+<strong>Ordinal measurement invariance (WLSMV)</strong>, and
+<strong>Include strict invariance (ordinal response residual
+variances)</strong>. Re-confirm and run.</li>
+<li>Inspect the fit table and successive corrected tests. Do not
+predeclare whether a test will be significant; model 07 omits a residual
+covariance built into the kit, so fit may be imperfect.</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stage</th>
+<th style="text-align: left;">Constraint added</th>
+<th style="text-align: right;">Expected df for model 07</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Configural</td>
+<td style="text-align: left;">Common structure and identification</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Thresholds</td>
+<td style="text-align: left;">Equal thresholds</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Metric</td>
+<td style="text-align: left;">Add equal loadings</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Scalar</td>
+<td style="text-align: left;">Add equal intercepts of underlying
+responses</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Strict</td>
+<td style="text-align: left;">Add equal underlying response residual
+variances</td>
+<td style="text-align: right;">36</td>
+</tr>
+</tbody>
+</table>
+<p>These theoretical df (increments 6, 4, 4, 6) were also confirmed in
+the ordinal acceptance suite using a separate simple ordinal fixture.
+Review actual df and diagnostics on your own data.
+<code>Selected estimates</code> includes thresholds (<code>|</code>),
+intercepts/means (<code>~1</code>) and variances (<code>~~</code>). The
+diagram does not draw thresholds or intercepts. A raw ordinal
+coefficient can change scale across stages because identification
+changes. The script in
+<code>Export &amp; restore &gt; Analysis script</code> stores the
+generated syntax used for estimation, with theta/WLSMV. The native
+corrected test uses Satorra’s 2000 scaled-shifted procedure, not a
+subtraction of corrected statistics. Robust fit indices may be
+unavailable for some stages.</p>
+<h2 id="regressions">4. Structural regression equality</h2>
+<p>Choose <strong>Equal regressions (path model / SEM)</strong> to fit a
+reference model with free regressions and a model with all or selected
+structural coefficients equal. The group measurement base is shared
+across the two fits. For latent models choose <strong>Equal loadings
+(metric)</strong> or <strong>Equal loadings and intercepts
+(scalar)</strong>, and justify that measurement restriction before
+testing structure. For observed path models the measurement option is
+ignored. Equality is tested on raw coefficients. A significant joint
+test does not identify which slope differs. Tests of coefficients chosen
+after seeing the results are exploratory.</p>
+<h3 id="walkthrough-f-all-single-and-joint-tests">Walkthrough F: all,
+single and joint tests</h3>
+<ol type="1">
+<li>Load <code>02_Chemins_A_ML.lvm</code>; estimate. Select
+<code>groupe</code> and Equal regressions.</li>
+<li>Under <strong>Regressions to constrain</strong>, choose <strong>All
+free regressions</strong>. Confirm and run. Read Free regressions and
+Equal regressions (expected df 2 and 6 for the kit).</li>
+<li>Change to <strong>Only selected regressions</strong>. Under
+<strong>Regressions equal across groups</strong>, choose
+<code>M ~ Z</code> only. Re-confirm and run; expected df difference = 1.
+The other coefficients remain free.</li>
+<li>Select <code>M ~ Z</code> and <code>Y ~ M</code> jointly. Re-confirm
+and run; expected df difference = 2. Repeat with model 04 for MLR.</li>
+</ol>
+<p>For the latent example <code>08_SEM_latent_ML.lvm</code>,
+<code>vF ~ uF</code> is a direct structural regression. The example
+includes <code>u2 ~~ v2</code>. Establish a defensible common scale
+before comparing the regression. It is not a latent mediation example.
+Partial measurement releases in the structural workflow, special labeled
+constraints and ordinal structural equality are outside this
+implementation.</p>
+<h2 id="scores">5. Explore constraints with score tests and EPC</h2>
+<p>The score module is a diagnostic, not an automatic model-modification
+procedure. It is restricted to warning-free, converged, admissible
+simple continuous CFA (at least three indicators per factor), two
+groups, ordinary ML with standard SEs and listwise deletion, and at most
+100 explicit equality constraints. The additional Browne residual
+normal-theory statistic supplied by lavaan 0.7-3 does not turn the
+ordinary ML fit into MLR. Robust and ordinal score tests are not
+offered.</p>
+<p>From a constrained fitted CFA, select <strong>Advanced diagnostics
+&gt; Constraint diagnostics</strong>, choose <strong>Fitted model with
+equality constraints</strong>, then click <strong>Compute score tests
+and EPC</strong>. The table lists candidate loading, intercept and
+residual variance equality constraints, chi-square score, df, p,
+Holm-adjusted p and status. The adjustment includes the number of all
+listed constraints, including unavailable ones. Choose <strong>Choose a
+tested constraint</strong> to see each group’s current estimate, EPC and
+Expected (estimate + EPC). Each score/EPC is computed by
+<code>lavTestScore(release = id, univariate = TRUE, epc = TRUE, standardized = FALSE)</code>
+with one equality released hypothetically; all others remain. A release
+violating the two-common-anchor safeguard is not evaluated. EPC is a
+local approximation, not the actual coefficient of a refitted model.
+Very small p-values may print as 0; do not report them as exactly
+zero.</p>
+<h3 id="walkthrough-g-discover-the-designed-differences">Walkthrough G:
+discover the designed differences</h3>
+<p>Use the continuous CFA kit. Run the complete sequence, then inspect
+Metric for <code>f1 =~ x3</code>. Release that loading only, rerun, then
+inspect Partial scalar for <code>y3 ~ 1</code>. Release both and inspect
+Partial strict for <code>y4 ~~ y4</code>. Read the full table; other
+constraints may also be significant when a true violation is retained.
+Do not assume the first displayed row is the only relevant parameter.
+The strict residual-variance diagnosis is informative, but the interface
+cannot free that variance across groups in the current partial workflow.
+Refit only theoretically justified partial models, using the available
+controls, and seek independent evidence. Use <strong>Download score
+table (CSV)</strong> and <strong>Download selected EPC (CSV)</strong> to
+retain the diagnostics.</p>
+<h2 id="effects">6. Compare indirect and total effects</h2>
+<p>For a recursive directed path model, the direct effect is the
+length-one path coefficient; each indirect effect is the product of
+coefficients along one directed path of length at least two; total
+indirect is their sum and total is direct plus total indirect. If there
+is no direct or indirect path of that kind, the corresponding component
+is a structural zero (not a hypothesis-test result). Covariances are not
+directed mediation paths.</p>
+<p>The module uses only the <strong>Free regressions</strong> fit in the
+continuous ML/MLR group workflow. It does not refit or use the
+constrained model. It enumerates paths in the common acyclic graph (at
+most 30 structural variables and 100 directed paths). It calculates
+estimates using raw regression coefficients and their full fitted
+covariance. With gradient <code>g</code> of an effect and covariance
+matrix <code>V</code>, delta-method variance is <code>g^T V g</code>.
+For the difference second minus first, use the difference of gradients,
+retaining cross-group covariance where present. Normal 95% intervals and
+unadjusted two-sided Wald p-values are reported. A missing SE/p-value is
+not proof of equality. A warning-free admissible fit and aligned
+covariance indices are required; no cycles, standardized-effect tests,
+ordinal effects or bootstrap are implemented. Normal intervals can be
+poor for asymmetric indirect-effect distributions. A path product is
+associational unless identification, temporal ordering and confounding
+assumptions support causal interpretation.</p>
+<h3 id="walkthrough-h-x-or-z-through-m-to-y">Walkthrough H: X or Z
+through M to Y</h3>
+<ol type="1">
+<li>Use <code>02_Chemins_A_ML.lvm</code>, run Equal regressions, and
+inspect the Free regressions fit.</li>
+<li>Choose <strong>Advanced diagnostics &gt; Indirect &amp; total
+effects</strong>. Select Source (X) = <code>X</code>, Target (Y) =
+<code>Y</code>, First group = A, Second group = B. Click <strong>Compute
+effects (second minus first)</strong>.</li>
+<li>The table contains the two group effects and the contrast for each
+component. Repeat with Source = <code>Z</code>. There is no direct Z → Y
+path. The direct row is a structural zero; Z’s total equals its indirect
+effect. Reverse the groups: sign changes, SE and p do not.</li>
+<li>Download <strong>effects (CSV)</strong>. Repeat with MLR model 04;
+the point estimates should be close while robust SEs may differ. Try an
+invalid same-group or no-directed-path contrast; it should be
+refused.</li>
+</ol>
+<p>Independent approximate ML reference values for the kit, not the
+separate acceptance-test fixture:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Effect</th>
+<th style="text-align: right;">A</th>
+<th style="text-align: right;">B</th>
+<th style="text-align: right;">B − A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Direct X → Y</td>
+<td style="text-align: right;">.355586</td>
+<td style="text-align: right;">.427134</td>
+<td style="text-align: right;">.071548</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indirect X → M → Y</td>
+<td style="text-align: right;">.258823</td>
+<td style="text-align: right;">.392097</td>
+<td style="text-align: right;">.133274</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total X → Y</td>
+<td style="text-align: right;">.614409</td>
+<td style="text-align: right;">.819231</td>
+<td style="text-align: right;">.204822</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indirect/total Z → M → Y</td>
+<td style="text-align: right;">.124485</td>
+<td style="text-align: right;">.526580</td>
+<td style="text-align: right;">.402095</td>
+</tr>
+</tbody>
+</table>
+<p>Use the bundled native script or actual fitted output for exact SEs,
+CIs and p-values. The script includes separate native lavaan labeled
+models with defined parameters (<code>:=</code>) to verify these
+effects. Such labels and definitions are not supported inputs to the
+advanced GUI group workflow.</p>
+<h2 id="diagrams">7. Inspect estimates and diagrams</h2>
+<p><strong>Selected estimates:</strong> choose a usable fitted Model and
+Unstandardized or Fully standardized. The latter uses
+<code>standardizedSolution()</code> (std.all), including its matching
+uncertainty, rather than appending raw SEs to standardized estimates.
+CSV exports contain the full selected table, including unrounded values.
+Group labels appear alongside lavaan’s parameter rows. Ordinal
+thresholds and intercepts are available in the table even though they
+are not drawn.</p>
+<p><strong>Path diagram:</strong> choose <strong>Fitted model</strong>
+and <strong>Display</strong>: One group, Compare two groups, or Two
+groups + difference (second minus first). Choose Group and Second group.
+Coefficients can be unstandardized or fully standardized
+(<code>std.all</code>). The third panel subtracts corresponding
+estimates before rounding. NA is unavailable, not zero. Equal raw
+coefficients can have unequal standardized values. Signed differences
+are descriptive, not tests of significance. Use formal equality tests or
+model-based contrasts for inference, and compare raw scales only where
+meaningful.</p>
+<p>Rectangles denote observed variables, ellipses latent variables.
+Single-headed arrows are loadings/regressions, double-headed arrows are
+covariances. Use Covariances and Variances to choose what to display.
+Layout offers Compact CFA (when applicable), Left to right, or Top to
+bottom. Drag variables to arrange the diagram; the same coordinates are
+used in every displayed panel. Keyboard: focus a node, use arrow keys
+(Shift for larger steps). Use Zoom, Decimals, Reset layout and Expand
+viewer for clarity. <strong>Download SVG</strong> on each panel exports
+its current vector drawing. The diagram does not change any fitted
+result or the main editor. For the original <code>plot_lavaan()</code>
+viewer, consult its own help and <code>export_plot()</code>; the two
+layout systems are separate.</p>
+<h2 id="exports">8. Reproducible exports and restoration</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Output</th>
+<th style="text-align: left;">Where to find it</th>
+<th style="text-align: left;">What it contains / does not contain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;">Fit table, Selected estimates,
+diagnostics/effects</td>
+<td style="text-align: left;">Numeric tables; no fitted model
+object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SVG</td>
+<td style="text-align: left;">Path diagram, each panel</td>
+<td style="text-align: left;">Current vector drawing, not a data or
+model file</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>.R</code></td>
+<td style="text-align: left;">Analysis script, under Export or Export
+&amp; restore</td>
+<td style="text-align: left;">Model syntax, actual options, original
+data fingerprint, refit and valid tests</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>.json</code></td>
+<td style="text-align: left;">Multiple Groups &gt; Export &amp; restore
+&gt; Save / restore</td>
+<td style="text-align: left;">Settings, audit tables and last valid
+diagram view; no individual rows or fitted objects</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>.html</code></td>
+<td style="text-align: left;">HTML report, under Export or Export &amp;
+restore</td>
+<td style="text-align: left;">Offline readable report, optional
+interactive multiple-group diagram; no individual rows</td>
+</tr>
+</tbody>
+</table>
+<h3 id="save-and-restore-an-analysis">Save and restore an analysis</h3>
+<p>Open <code>Path diagram</code> before saving if you want the last
+view recorded. For example, choose the scalar stage, two groups plus
+difference, B then A, std.all, 125%, four decimals, move two nodes and
+set the covariance/variance toggles. Open <strong>Export &amp; restore
+&gt; Save / restore</strong>. Look for <strong>Diagram view ready to
+save</strong>, verify the model, group order, scale and zoom, then
+<strong>Download analysis (.json)</strong>. Keep the <code>.lvm</code>,
+original CSV and JSON together. Version 2 stores the last valid view,
+not every model’s individual layout. Version 1 remains readable; it has
+no view. A snapshot is limited to 5 MB. It records aggregate fit
+results, group labels/counts, estimates, diagnostics, settings, version
+information and model/data fingerprints. Old numeric tables are for
+audit, not restored live results.</p>
+<p>To restore, reopen the same CSV and <code>.lvm</code> with identical
+estimation settings, estimate it, open Multiple Groups &gt; Export &amp;
+restore &gt; Save / restore, choose <strong>Saved analysis
+(.json)</strong> and read the status. <strong>Apply saved
+settings</strong> only populates the controls. Review, confirm and
+<strong>Run multigroup analysis</strong> to obtain fresh fits. Open Path
+diagram and check the saved stage, groups, coordinates and view
+settings. If a saved stage is no longer usable, the view may be
+declined. Any modified data or specification is rejected. Do not edit
+fingerprints to force acceptance. Refit may differ after software
+upgrades.</p>
+<h3 id="read-or-run-the-r-script">Read or run the R script</h3>
+<p>Choose Analysis script under the relevant export tab. You may
+read/copy the text without downloading. If downloading, load the
+identical original data as a data.frame named <code>data</code> before
+running it. For the synthetic CSV, start with the same reader as the
+application:</p>
+<pre class="r"><code>data &lt;- as.data.frame(readr::read_csv(&quot;banc_lavaangui.csv&quot;,
+                                     show_col_types = FALSE))
+# Review the exported script first. Then source its actual local file.
+# source(&quot;multigroup-analysis.R&quot;)  # replace with the file name saved</code></pre>
+<p>The fingerprint depends on the actual imported data representation,
+column order and attributes, not just values; match the original loader
+and do not disable the check if it fails. The script stores the fitted
+specifications (including ordinal generated syntax), refits, reports
+convergence and post-checks, repeats tests that were valid in the GUI
+and prints session information. It does not automatically rerun every
+optional exploratory diagnostic. Keep the source data separately. The
+extension does not execute imported JSON or arbitrary R code from a
+report.</p>
+<h3 id="offline-html-report">Offline HTML report</h3>
+<p>After running an analysis (and any optional diagnostics you want to
+include), choose <strong>HTML report</strong> and click <strong>Download
+HTML report</strong>. It includes specifications and assumptions, fit
+measures, group counts where relevant, tests and warnings, available
+raw/standardized estimates, current score/EPC or effects if computed,
+and reproducible R syntax. In Multiple Groups, the last valid diagram
+view (or a default usable view) is embedded in the file. The diagram
+reader works without Shiny or R, can change groups and export SVG, and
+performs no new estimation. If local JavaScript is blocked, tables and
+script remain readable. The comparison report does not have a multigroup
+diagram. Optional analyses absent or invalidated by changing the
+selection are not included. Recipes for optional diagnostic refits use
+internal functions from this same development contribution; they are not
+new public API. Review all notes before sharing.</p>
+<p><strong>Confidentiality.</strong> These exports contain no individual
+data rows by design, but group labels, variable names, group sizes,
+estimates, warnings and data fingerprints can be confidential. The
+fingerprint checks consistency, not authenticity. Use appropriate
+storage and sharing procedures.</p>
+<h2 id="validation">9. Verify and reproduce</h2>
+<h3 id="native-r-walkthrough">Native R walkthrough</h3>
+<p>The installed example script uses the native lavaan API and optional
+semTools, not the extension’s internal helpers. It prints fit tables,
+corrected tests, selected native scores/EPC and defined effects. From
+the installed package:</p>
+<pre class="r"><code>source(system.file(&quot;advanced-examples&quot;, &quot;reference-examples.R&quot;,
+                   package = &quot;lavaangui&quot;))</code></pre>
+<p>From a source checkout root:</p>
+<pre class="sh"><code>Rscript inst/advanced-examples/reference-examples.R</code></pre>
+<p>A CSV path may be supplied as the first Rscript argument. The script
+reads the exact teaching data and does not overwrite files. Ordinal
+invariance is skipped if semTools is unavailable. This is a newly
+documented reference walkthrough; its execution should be checked in R.
+It is separate from the previously passed acceptance scripts, which use
+native-lavaan comparisons and simulated/built-in fixtures.</p>
+<h3 id="acceptance-status">Acceptance status</h3>
+<p>On 26 November 2026 the contributor executed the six consolidated R
+suites on Windows 11 x64, R 4.6.0 and lavaan 0.7-3. All returned exit
+code 0 after two compatibility corrections. A notice that lavaan was
+built under R 4.6.2 did not prevent the tests from passing. The evidence
+is in the author review package, not invented example values.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Suite</th>
+<th style="text-align: left;">Final result</th>
+<th style="text-align: left;">Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>advanced_analysis.R</code></td>
+<td style="text-align: left;">PASS</td>
+<td style="text-align: left;">ML/MLR nesting, df classes, marker
+scaling, complete/partial invariance, group regression equality, script
+replay and refusals</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>advanced_diagrams.R</code></td>
+<td style="text-align: left;">PASS</td>
+<td style="text-align: left;">318 parameter-to-edge matches from actual
+fitted models</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>advanced_wlsmv_projects.R</code></td>
+<td style="text-align: left;">PASS</td>
+<td style="text-align: left;">Ordinal WLSMV corrected comparison,
+settings restore and guard checks</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>advanced_ordinal_views.R</code></td>
+<td style="text-align: left;">PASS</td>
+<td style="text-align: left;">Five ordinal stages, corrected tests,
+script, JSON v1/v2 and view validation</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>advanced_score_differences.R</code></td>
+<td style="text-align: left;">PASS</td>
+<td style="text-align: left;">Ordinary ML options, score and
+single-release EPC, anchor guards and difference JSON</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>advanced_effects_reports.R</code></td>
+<td style="text-align: left;">PASS</td>
+<td style="text-align: left;">Native ML/MLR effects/contrasts,
+covariance for shared paths, actual HTML report serialization and
+navigation</td>
+</tr>
+</tbody>
+</table>
+<p>The ordinal test fixture produced df 16, 22, 26, 30, 36. The
+diagnostic test fixture detected the intended <code>f1=~x3</code>,
+<code>y3~1</code>, and <code>y4~~y4</code> violations. The single-group
+WLSMV fixture produced a corrected difference statistic of 52.343 with 1
+df. These are results on the acceptance fixtures; do not use them as the
+exact teaching CSV results.</p>
+<p>From the source project root, install dependencies including
+semTools, then run:</p>
+<pre class="sh"><code>Rscript tests/manual/run_advanced_validation.R</code></pre>
+<p>It creates a new timestamped <code>advanced-validation-*</code>
+directory at the root with <code>summary.csv</code>, logs and session
+information. A nonzero exit code identifies failed suites. The existing
+passing code and tests are preserved unchanged by the documentation
+increment. Browser tests with simulated Shiny inputs and contributor
+trials are additional evidence, not a full end-to-end Shiny matrix. The
+documented package still needs installed-help checks,
+<code>R CMD check</code>, further interactive/accessibility checks and
+cross-platform review before an upstream release.</p>
+<h3 id="practical-acceptance-checklist">Practical acceptance
+checklist</h3>
+<ul>
+<li>Open an existing <code>.lvm</code>, estimate and ensure the original
+editor behaves as before.</li>
+<li>Check ML, MLR and WLSMV A/B, including reversed/non-nested pairs; no
+invalid formal test should be presented.</li>
+<li>Compare full and partial continuous sequences, check the ordinal
+sequence and category/anchor safeguards.</li>
+<li>Test all, individual and joint regression restrictions, and justify
+latent measurement base.</li>
+<li>Check raw/std estimates, group order and difference direction,
+synchronized dragging and SVG export.</li>
+<li>Save/restore JSON including last view and reject changed data;
+recompute scores and effects; open HTML offline.</li>
+<li>Check small/large windows and keyboard navigation. Confirm new
+data/settings invalidate stale results. Save logs, actual versions and
+reproducible syntax.</li>
+</ul>
+<h2 id="troubleshooting">10. Troubleshooting</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Symptom</th>
+<th style="text-align: left;">What to check</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">No completed estimate with current
+data</td>
+<td style="text-align: left;">Return to the main diagram, estimate,
+wait; check data and errors.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group column not listed</td>
+<td style="text-align: left;">It must have 2–10 nonblank values and be
+absent from the modeled variables.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Partial options missing</td>
+<td style="text-align: left;">Choose continuous CFA mode and check
+Specify exceptions (partial invariance). Marker loading is intentionally
+excluded.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Please confirm assumptions</td>
+<td style="text-align: left;">Complete all selections, then check the
+confirmation box again.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Latent variances/marker warning</td>
+<td style="text-align: left;">Use ordinary first-marker scaling and
+automatic variances; do not explicitly fix latent variances or nonmarker
+loadings.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">No inferential test</td>
+<td style="text-align: left;">Read the diagnostic. Check nesting,
+identical data/options, observed variables, cases, warnings,
+admissibility and df. Do not remove the safeguards.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ordinal module rejected</td>
+<td style="text-align: left;">Verify semTools, ordered declarations,
+WLSMV, category counts in every group, automatic variances/covariances
+and simple CFA.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Score unavailable</td>
+<td style="text-align: left;">Use two-group simple continuous CFA with
+ordinary ML/standard SE and listwise deletion.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Effect unavailable</td>
+<td style="text-align: left;">Run Equal regressions, inspect the
+warning-free Free regressions fit and choose distinct groups and a valid
+directed path.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Missing SVG or crowded diagram</td>
+<td style="text-align: left;">Select a usable model, scroll/zoom, expand
+or move nodes; save individual SVG panels.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Save / restore or Analysis script
+missing</td>
+<td style="text-align: left;">Look under Export &amp; restore. In Model
+Comparison look under Export (no group JSON there).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">JSON fingerprint mismatch</td>
+<td style="text-align: left;">Restore identical original model, options
+and data representation/order, estimate first; use the saved file, not a
+manually edited recipe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline diagram blocked</td>
+<td style="text-align: left;">Open the HTML in a local browser allowing
+trusted local JavaScript; tables remain readable.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="references">References and further reading</h2>
+<ul>
+<li>Karch, J. D. (2025). <em>lavaangui: A Web-Based Graphical Interface
+for Specifying Lavaan Models by Drawing Path Diagrams</em>. Structural
+Equation Modeling: A Multidisciplinary Journal. <a
+href="https://doi.org/10.1080/10705511.2024.2420678">doi:10.1080/10705511.2024.2420678</a>.</li>
+<li>Wu, H., &amp; Estabrook, R. (2016). Identification of confirmatory
+factor analysis models of different levels of invariance for ordered
+categorical outcomes. <em>Psychometrika, 81</em>, 1014–1045. <a
+href="https://doi.org/10.1007/s11336-016-9506-0">doi:10.1007/s11336-016-9506-0</a>.</li>
+<li>Satorra, A. (2000). Scaled and adjusted restricted tests in
+multi-sample analysis of moment structures. See the method documentation
+in <code>help("lavTestLRT", package="lavaan")</code> for the
+implementation and further references.</li>
+<li>lavaan documentation: <code>lavTestLRT</code>,
+<code>lavTestScore</code>, <code>parameterEstimates</code>,
+<code>standardizedSolution</code>, <code>lavInspect</code>,
+<code>fitMeasures</code>; <a
+href="https://lavaan.ugent.be/tutorial/groups.html">multiple groups</a>,
+<a href="https://lavaan.ugent.be/tutorial/cat.html">categorical
+data</a>, <a
+href="https://lavaan.ugent.be/tutorial/mediation.html">mediation</a>.</li>
+<li>semTools: <a
+href="https://search.r-project.org/CRAN/refmans/semTools/html/measEq.syntax.html"><code>measEq.syntax</code></a>,
+available as an optional dependency for the ordinal sequence.</li>
+</ul>
+<p>See the installed R help index
+(<code>help(package="lavaangui")</code>), the overview topic
+<code>lavaangui-advanced</code>, <code>NEWS.md</code> and the technical
+contribution dossier for the proposed extension and remaining review
+tasks.</p>
+</body>
+</html>

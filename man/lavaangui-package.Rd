@@ -18,8 +18,13 @@ fitted \pkg{lavaan} models. Nodes can be repositioned by dragging them
 with the mouse.}
 }
 
-The web application can also be used without installing R at
-\url{https://lavaangui.org/}.
+The original web application is also available at
+\url{https://lavaangui.org/}. The advanced workflows described here refer
+to this local development contribution, not necessarily the hosted version.
+}
+\details{
+See \code{\link{lavaangui-advanced}} for the advanced analysis workflows,
+scope, installed guide and examples. No new public R functions are introduced.
 }
 \references{
 Karch, J. D. (2025). lavaangui: A Web-Based Graphical Interface for
